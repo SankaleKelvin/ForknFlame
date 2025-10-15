@@ -7,91 +7,90 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    public function store(Request $request){
-        $validated=$request->validate([
-            'name'=>'required | string',
-            'slug'=>'required| string | unique:roles,slug'
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required | string',
+            'slug' => 'required| string | unique:roles,slug'
         ]);
 
         $role = new Role();
         $role->name = $validated['name'];
         $role->slug = $validated['slug'];
 
-        try{
+        try {
             $role->save();
             return response()->json([
-                'Role'=>$role,
+                'Role' => $role,
             ], 200);
-        }
-        catch(\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json([
-                'Error'=>"Failed to save Role",
+                'Error' => "Failed to save Role",
             ], 500);
         }
     }
 
-    public function index(){
-        try{
+    public function index()
+    {
+        try {
             $roles = Role::all();
             return response()->json([
-                'Roles'=>$roles,
+                'Roles' => $roles,
             ], 200);
-        }
-        catch(\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json([
-                'Error'=>"Failed to Fetch Roles",
+                'Error' => "Failed to Fetch Roles",
             ], 500);
         }
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $role = Role::findOrFail($id);
-        if($role){
+        if ($role) {
             return response()->json([
-                'Role'=>$role
+                'Role' => $role
             ], 200);
-        }
-        else{
+        } else {
             return "Role not found.";
         }
     }
 
-    public function update(Request $request, $id){
-        $validated=$request->validate([
-            'name'=>'required | string',
-            'slug'=>'required| string | unique:roles,slug'
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required | string',
+            'slug' => 'required| string | unique:roles,slug'
         ]);
 
         $role = Role::findOrFail($id);
         $role->name = $validated['name'];
         $role->slug = $validated['slug'];
 
-        try{
+        try {
             $role->save();
             return response()->json([
-                'Role'=>$role,
+                'Role' => $role,
             ], 200);
-        }
-        catch(\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json([
-                'Error'=>"Failed to Update Role",
+                'Error' => "Failed to Update Role",
             ], 500);
         }
-
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $role = Role::findOrFail($id);
-        
-        try{
+
+        try {
             $role->destroy($id);
             return "Role Deleted Successfully!";
-        }
-        catch(\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json([
-                'Error'=>"Failed to Delete Role", $exception->getMessage()
+                'Error' => "Failed to Delete Role",
+                $exception->getMessage()
             ], 500);
         }
-
     }
 }
