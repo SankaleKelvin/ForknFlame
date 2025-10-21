@@ -45,19 +45,19 @@ class AuthController extends Controller
         try {
             $user = User::where('email', $validated['email'])->first();
 
-            if (! $user || ! Hash::check($validated['password'], $user->password)) {
+            if (!$user || !Hash::check($validated['password'], $user->password)) {
                 throw ValidationException::withMessages([
-                    'email' => ['The provided credentials are incorrect.'],
-                ]);
+                    'email' => ['The Provided Credentials are Incorrect.'],
+                ], 401);
             }
 
-            $token = $user->createToken('auth-token')->plainTextToken;
             $token = $user->createToken("auth-token")->plainTextToken;
             return response()->json([
                 'message' => 'Login Successful!',
                 'user' => $user,
                 'token' => $token
             ], 200);
+
         } catch (\Exception $exception) {
             return response()->json([
                 'Error' => "Registration Failed!",
@@ -66,11 +66,10 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request)
-    {
+    public function logout(Request $request){
         $request->user()->currentAccessToken()->delete();
         return response()->json([
-            'message' => 'Logout Successful!'
+            'message'=>'Logout Successful!'
         ], 200);
     }
 }

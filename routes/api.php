@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FoodController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Http\Request;
@@ -45,4 +47,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/getFood/{id}', [FoodController::class, 'show']);
     Route::post('/updateFood/{id}', [FoodController::class, 'update']);
     Route::delete('/deleteFood/{id}', [FoodController::class, 'delete']);
+
+    //Order
+    Route::post('/saveOrder', [OrderController::class, 'store']);
+    Route::get('/getOrder', [OrderController::class, 'index']);
+    Route::get('/getOrder/{id}', [OrderController::class, 'show']);
+    Route::post('/updateOrder/{id}', [OrderController::class, 'update']);
+    Route::delete('/deleteOrder/{id}', [OrderController::class, 'delete']);
+
+    //Payment
+    Route::post('/savePayment', [PaymentController::class, 'store']);
+    Route::get('/getPayment', [PaymentController::class, 'index']);
+    Route::get('/getPayment/{id}', [PaymentController::class, 'show']);
+    Route::post('/updatePayment/{id}', [PaymentController::class, 'update']);
+    Route::delete('/deletePayment/{id}', [PaymentController::class, 'delete']);
 });
