@@ -102,7 +102,7 @@ class PaymentController extends Controller
             try {
                 $payment->delete();
                 return response()->json([
-                    'Payment Deleted Successsfully!'
+                    'Payment Deleted Successfully!'
                 ], 200);
             } catch (\Exception $exception) {
                 return response()->json([

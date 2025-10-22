@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,14 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
+
+    //User
+    Route::get('/getUser', [UserController::class, 'index']);
+    Route::post('/saveUser', [UserController::class, 'store']);
+    Route::get('/getUser/{id}', [UserController::class, 'show']);
+    Route::post('/updateUser/{id}', [UserController::class, 'update']);
+    Route::delete('/deleteUser/{id}', [UserController::class, 'delete']);
 
     //Roles
     Route::post('/saveRole', [RoleController::class, 'store']);

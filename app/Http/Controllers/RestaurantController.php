@@ -101,7 +101,7 @@ class RestaurantController extends Controller
             try{
                 $restaurant->delete();
                 return response()->json([
-                    'Restaurant Deleted Successsfully!'
+                    'Restaurant Deleted Successfully!'
                 ], 200);
             }
             catch(\Exception $exception){

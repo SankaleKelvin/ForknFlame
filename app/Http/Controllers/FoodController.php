@@ -114,7 +114,7 @@ class FoodController extends Controller
             try {
                 $food->delete();
                 return response()->json([
-                    'Food Deleted Successsfully!'
+                    'Food Deleted Successfully!'
                 ], 200);
             } catch (\Exception $exception) {
                 return response()->json([

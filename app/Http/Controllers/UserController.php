@@ -3,30 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class UserController extends Controller
 {
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|min:4',
-            'description' => 'nullable|max:1000'
+            'email' => 'required|string|email',
+            'password' => 'required|string|min:3'
         ]);
 
-        $category = new Category();
-        $category->name = $request->name;
-        $category->description = $request->description;
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
 
         try {
-            $category->save();
+            $user->save();
             return response()->json([
-                'Category' => $category
+                'User' => $user
             ], 200);
         } catch (\Exception $exception) {
             return response()->json([
-                'error' => 'Failed to save Category',
+                'error' => 'Failed to save User',
                 'message' => $exception->getMessage()
             ], 500);
         }
@@ -35,17 +37,17 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $category = Category::all();
-            if ($category) {
+            $user = User::all();
+            if ($user) {
                 return response()->json([
-                    'Category' => $category
+                    'User' => $user
                 ], 200);
             } else {
-                return "No category was found.";
+                return "No user was found.";
             }
         } catch (\Exception $exception) {
             return response()->json([
-                'error' => 'Failed to fetch Category',
+                'error' => 'Failed to fetch User',
                 'message' => $exception->getMessage()
             ], 500);
         }
@@ -54,13 +56,13 @@ class CategoryController extends Controller
     public function show($id)
     {
         try {
-            $category = Category::findOrFail($id);
+            $user = User::findOrFail($id);
             return response()->json([
-                'Category' => $category
+                'User' => $user
             ], 200);
         } catch (\Exception $exception) {
             return response()->json([
-                'error' => 'Failed to fetch Category',
+                'error' => 'Failed to fetch User',
                 'message' => $exception->getMessage()
             ], 500);
         }
@@ -68,36 +70,38 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        $category = Category::findOrFail($id);
+        $user = User::findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|min:4',
-            'description' => 'nullable|max:1000'
+            'email' => 'required|string|email',
+            'password' => 'required|string|min:3'
         ]);
-        
-        $category->name = $request->name;
-        $category->description = $request->description;
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
 
         try {
-            $category->save();
+            $user->save();
             return response()->json([
-                'Category' => $category
+                'User' => $user
             ], 200);
         } catch (\Exception $exception) {
             return response()->json([
-                'error' => 'Failed to update Category',
+                'error' => 'Failed to update User',
                 'message' => $exception->getMessage()
             ], 500);
         }
     }
 
     public function delete($id){
-        $category = Category::findOrFail($id);
-        if($category){
+        $user = User::findOrFail($id);
+        if($user){
             try{
-                $category->delete();
+                $user->delete();
                 return response()->json([
-                    'Category Deleted Successfully!'
+                    'User Deleted Successfully!'
                 ], 200);
             }
             catch(\Exception $exception){
@@ -108,7 +112,7 @@ class CategoryController extends Controller
             }
         }
         else{
-            return "Category was not found";
+            return "User was not found";
         }
     }
 }

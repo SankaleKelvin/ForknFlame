@@ -106,7 +106,7 @@ class OrderController extends Controller
             try {
                 $order->delete();
                 return response()->json([
-                    'Order Deleted Successsfully!'
+                    'Order Deleted Successfully!'
                 ], 200);
             } catch (\Exception $exception) {
                 return response()->json([
