@@ -15,13 +15,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // User::create([
-        // 'name'=> 'Kelvin',
-        // 'email'=> 'kelvin@strathmore.edu',
-        // 'password'=>'12345'
-        // ]);
-
         $this->call(RoleSeeder::class);
+
+        User::create([
+        'name'=> 'Kelvin Sankale',
+        'email'=> 'kelvin@strath.edu',
+        'password'=>'123456',
+        'is_active'=>'1', 
+        'role_id' => '1'
+        ]);
+
         $this->call(CategorySeeder::class);
         $this->call(RestaurantSeeder::class);
         $this->call(FoodSeeder::class);

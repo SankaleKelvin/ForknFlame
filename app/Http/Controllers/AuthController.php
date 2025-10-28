@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,6 +19,9 @@ class AuthController extends Controller
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        
+        $role = Role::where('slug','user')->first()->id;
+        $validated['role_id'] = $role;
 
         try {
 
@@ -52,15 +56,16 @@ class AuthController extends Controller
             }
 
             $token = $user->createToken("auth-token")->plainTextToken;
-            return response()->json([
+             return response()->json([
                 'message' => 'Login Successful!',
                 'user' => $user,
-                'token' => $token
-            ], 200);
+                'token' => $token,
+                'abilities'=>$user->abilities()
+            ], 201);
 
         } catch (\Exception $exception) {
             return response()->json([
-                'Error' => "Registration Failed!",
+                'Error' => "Login Failed!",
                 'Message' => $exception->getMessage()
             ], 500);
         }

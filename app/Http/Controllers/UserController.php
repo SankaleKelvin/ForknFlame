@@ -13,7 +13,10 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|min:4',
             'email' => 'required|string|email',
-            'password' => 'required|string|min:3'
+            'password' => 'required|string|min:3',
+            'user_image' => 'nullable|mimes:jpeg,png,jpg|max:2048',
+            'is_active' => 'required|boolean',
+            'role_id' => 'required|integer|exists:roles,id'
         ]);
 
         $user = new User();
@@ -37,7 +40,11 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $user = User::all();
+            // $user = User::all();
+            $user = User::join('roles', 'users.role_id', '=', 'roles.id')
+                        ->select('users.*', 'roles.name as role_name')
+                        ->get();
+
             if ($user) {
                 return response()->json([
                     'User' => $user
@@ -75,7 +82,10 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|min:4',
             'email' => 'required|string|email',
-            'password' => 'required|string|min:3'
+            'password' => 'required|string|min:3',
+            'user_image' => 'required|mimes:jpeg,png,jpg|max:2048',
+            'is_active' => 'required|boolean',
+            'role_id' => 'required|integer|exists:roles,id'
         ]);
 
         $user->name = $request->name;
