@@ -23,6 +23,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = $request->password;
+        $user->role_id = $request->role_id;
 
         try {
             $user->save();
@@ -91,6 +92,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = $request->password;
+        $user->role_id = $request->role_id;
 
         if($request->hasFile('user_image')){
             $fileName = $request->file('user_image')->store('posts', 'public');
