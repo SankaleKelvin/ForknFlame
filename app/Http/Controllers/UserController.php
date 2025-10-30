@@ -92,6 +92,14 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->password = $request->password;
 
+        if($request->hasFile('user_image')){
+            $fileName = $request->file('user_image')->store('posts', 'public');
+        }
+        else{
+            $fileName = null;
+        }
+        $user->user_image = $fileName;
+
         try {
             $user->save();
             return response()->json([

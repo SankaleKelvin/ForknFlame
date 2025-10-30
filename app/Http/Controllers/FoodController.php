@@ -15,6 +15,7 @@ class FoodController extends Controller
             'price' => 'required',
             'description' => 'required|max:2000',
             'food_code' => 'required|string|max:10',
+            'food_image' => 'nullable|mimes:jpeg,png,jpg|max:2048',
             'category_id' => 'required|integer|exists:categories,id',
             'restaurant_id' => 'required|integer|exists:restaurants,id'
         ]);
@@ -24,6 +25,7 @@ class FoodController extends Controller
         $food->price = $request->price;
         $food->description = $request->description;
         $food->food_code = $request->food_code;
+        $food->food_image = $request->food_image;
         $food->category_id = $request->category_id;
         $food->restaurant_id = $request->restaurant_id;
 
@@ -43,7 +45,11 @@ class FoodController extends Controller
     public function index()
     {
         try {
-            $food = Food::all();
+            // $food = Food::all();
+            $food = Food::join('categories', 'food.category_id', '=', 'categories.id')
+                            ->join('restaurants', 'food.restaurant_id', '=', 'restaurants.id')
+                            ->select('food.*', 'categories.name as category_name', 'restaurants.name as restaurant_name')
+                            ->get();
             if ($food) {
                 return response()->json([
                     'Food' => $food
@@ -83,6 +89,7 @@ class FoodController extends Controller
             'price' => 'required',
             'description' => 'required|max:2000',
             'food_code' => 'required|string|max:10',
+            'food_image' => 'nullable|mimes:jpeg,png,jpg|max:2048',
             'category_id' => 'required|integer|exists:categories,id',
             'restaurant_id' => 'required|integer|exists:restaurants,id'
         ]);
@@ -91,6 +98,7 @@ class FoodController extends Controller
         $food->price = $request->price;
         $food->description = $request->description;
         $food->food_code = $request->food_code;
+        $food->food_image = $request->food_image;
         $food->category_id = $request->category_id;
         $food->restaurant_id = $request->restaurant_id;
 
