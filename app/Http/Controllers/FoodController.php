@@ -25,10 +25,16 @@ class FoodController extends Controller
         $food->price = $request->price;
         $food->description = $request->description;
         $food->food_code = $request->food_code;
-        $food->food_image = $request->food_image;
+        // $food->food_image = $request->food_image;
         $food->category_id = $request->category_id;
         $food->restaurant_id = $request->restaurant_id;
 
+        if($request->hasFile('food_image')){
+            $fileName = $request->file('food_image')->store('food', 'public');
+        } else{
+            $fileName = null;
+        }
+        $food->food_image = $fileName;
         try {
             $food->save();
             return response()->json([
@@ -98,10 +104,17 @@ class FoodController extends Controller
         $food->price = $request->price;
         $food->description = $request->description;
         $food->food_code = $request->food_code;
-        $food->food_image = $request->food_image;
+        // $food->food_image = $request->food_image;
         $food->category_id = $request->category_id;
         $food->restaurant_id = $request->restaurant_id;
 
+        if($request->hasFile('food_image')){
+            $fileName = $request->file('food_image')->store('food', 'public');
+        } else{
+            $fileName = null;
+        }
+        $food->food_image = $fileName;
+        
         try {
             $food->save();
             return response()->json([
