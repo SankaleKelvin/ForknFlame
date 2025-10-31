@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Food;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
     public function store(Request $request)
     {
         $request->validate([
-            'quantity' => 'required|numeric|min:4',
+            'quantity' => 'required|numeric|min:0.1',
+            'order_amount' => 'required|numeric',
             'status' => 'required|string',
             'user_id' => 'required|integer|exists:users,id',
             'food_id' => 'required|integer|exists:food,id'
@@ -20,11 +22,37 @@ class OrderController extends Controller
 
         $order = new Order();
         $order->quantity = $request->quantity;
+        $order->order_amount = $request->order_amount;
         $order->status = $request->status;
         $order->user_id = $request->user_id;
         $order->food_id = $request->food_id;
 
         try {
+            $order->save();
+
+            // ===== Generate Order Code =====
+            $today = now()->toDateString(); // YYYY-MM-DD
+
+            // Lock rows created today to avoid same sequence numbers under concurrency
+            $countToday = DB::table('orders')
+                ->whereDate('created_at', $today)
+                ->lockForUpdate()
+                ->count();
+
+            // order number for the day (e.g., 001, 002, 003)
+            $sequence = str_pad($countToday, 3, '0', STR_PAD_LEFT);
+
+            // Format: 001-ORD-20251031-U12-F34
+            $orderCode = sprintf(
+                '%s-ORD-%s-U%s-F%s',
+                $sequence,
+                now()->format('Ymd'),
+                $request->user_id,
+                $request->food_id
+            );
+
+            // Save code
+            $order->order_code = $orderCode;
             $order->save();
             return response()->json([
                 'Order' => $order
@@ -40,7 +68,11 @@ class OrderController extends Controller
     public function index()
     {
         try {
-            $order = Order::all();
+            // $order = Order::all();
+            $order = Order::join('users', 'orders.user_id', '=', 'users.id')
+                ->join('food', 'orders.food_id', '=', 'food.id')
+                ->select('orders.*', 'users.name as user_name', 'food.name as food_name')
+                ->get();
             if ($order) {
                 return response()->json([
                     'Order' => $order
@@ -76,14 +108,17 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         $request->validate([
-            'quantity' => 'required|numeric|min:4',
+            'quantity' => 'required|numeric|min:0.1',
+            'order_amount' => 'required|numeric',
             'status' => 'required|string',
             'user_id' => 'required|integer|exists:users,id',
             'food_id' => 'required|integer|exists:food,id'
         ]);
 
         $order->quantity = $request->quantity;
+        $order->order_amount = $request->order_amount;
         $order->status = $request->status;
+        $order->order_code = $order->order_code;
         $order->user_id = $request->user_id;
         $order->food_id = $request->food_id;
 
@@ -134,5 +169,18 @@ class OrderController extends Controller
         $total = round($price * $qty, 2);
 
         return response()->json(['total' => $total]);
+    }
+
+    public function getUserBalance($userId)
+    {
+        $totalOrders = Order::where('user_id', $userId)->sum('order_amount');
+        $totalPayments = \App\Models\Payment::where('user_id', $userId)->sum('amount_paid');
+        $balance = $totalPayments - $totalOrders;
+
+        return response()->json([
+            'balance' => $balance,
+            'total_orders' => $totalOrders,
+            'total_payments' => $totalPayments,
+        ]);
     }
 }

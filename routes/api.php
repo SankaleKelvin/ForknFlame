@@ -64,6 +64,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/updateOrder/{id}', [OrderController::class, 'update']);
     Route::delete('/deleteOrder/{id}', [OrderController::class, 'delete']);
     Route::post('/calculateOrder', [OrderController::class, 'calculateOrder']);
+    Route::get('/getUserBalance/{id}', [OrderController::class, 'getUserBalance']);
 
     //Payment
     Route::post('/savePayment', [PaymentController::class, 'store']);
@@ -71,4 +72,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/getPayment/{id}', [PaymentController::class, 'show']);
     Route::post('/updatePayment/{id}', [PaymentController::class, 'update']);
     Route::delete('/deletePayment/{id}', [PaymentController::class, 'delete']);
+    Route::post('/calculate-user-balance', [PaymentController::class, 'calculateUserBalance']);
 });
