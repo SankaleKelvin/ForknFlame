@@ -63,6 +63,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/getOrder/{id}', [OrderController::class, 'show']);
     Route::post('/updateOrder/{id}', [OrderController::class, 'update']);
     Route::delete('/deleteOrder/{id}', [OrderController::class, 'delete']);
+    Route::post('/calculateOrder', [OrderController::class, 'calculateOrder']);
 
     //Payment
     Route::post('/savePayment', [PaymentController::class, 'store']);

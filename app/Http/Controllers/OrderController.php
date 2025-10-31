@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Food;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'quantity' => 'required|double|min:4',
+            'quantity' => 'required|numeric|min:4',
             'status' => 'required|string',
             'user_id' => 'required|integer|exists:users,id',
             'food_id' => 'required|integer|exists:food,id'
@@ -75,7 +76,7 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         $request->validate([
-            'quantity' => 'required|double|min:4',
+            'quantity' => 'required|numeric|min:4',
             'status' => 'required|string',
             'user_id' => 'required|integer|exists:users,id',
             'food_id' => 'required|integer|exists:food,id'
@@ -117,5 +118,21 @@ class OrderController extends Controller
         } else {
             return "Order was not found";
         }
+    }
+
+    public function calculateOrder(Request $request)
+    {
+        $request->validate([
+            'food_id' => 'required|integer|exists:food,id',
+            'quantity' => 'required|numeric|min:0.01',
+        ]);
+
+        $food = Food::findOrFail($request->food_id);
+        // $food = Food::where('id', $request->food_id);
+        $price = $food->price;
+        $qty = (float) $request->quantity;
+        $total = round($price * $qty, 2);
+
+        return response()->json(['total' => $total]);
     }
 }

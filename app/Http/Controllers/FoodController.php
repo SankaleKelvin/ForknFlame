@@ -29,9 +29,9 @@ class FoodController extends Controller
         $food->category_id = $request->category_id;
         $food->restaurant_id = $request->restaurant_id;
 
-        if($request->hasFile('food_image')){
+        if ($request->hasFile('food_image')) {
             $fileName = $request->file('food_image')->store('food', 'public');
-        } else{
+        } else {
             $fileName = null;
         }
         $food->food_image = $fileName;
@@ -53,9 +53,9 @@ class FoodController extends Controller
         try {
             // $food = Food::all();
             $food = Food::join('categories', 'food.category_id', '=', 'categories.id')
-                            ->join('restaurants', 'food.restaurant_id', '=', 'restaurants.id')
-                            ->select('food.*', 'categories.name as category_name', 'restaurants.name as restaurant_name')
-                            ->get();
+                ->join('restaurants', 'food.restaurant_id', '=', 'restaurants.id')
+                ->select('food.*', 'categories.name as category_name', 'restaurants.name as restaurant_name')
+                ->get();
             if ($food) {
                 return response()->json([
                     'Food' => $food
@@ -108,13 +108,13 @@ class FoodController extends Controller
         $food->category_id = $request->category_id;
         $food->restaurant_id = $request->restaurant_id;
 
-        if($request->hasFile('food_image')){
+        if ($request->hasFile('food_image')) {
             $fileName = $request->file('food_image')->store('food', 'public');
-        } else{
+        } else {
             $fileName = null;
         }
         $food->food_image = $fileName;
-        
+
         try {
             $food->save();
             return response()->json([
@@ -147,4 +147,5 @@ class FoodController extends Controller
             return "Food was not found";
         }
     }
+
 }
