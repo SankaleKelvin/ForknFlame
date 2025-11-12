@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
@@ -42,39 +44,41 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
-    public function role(){
+
+    public function role()
+    {
         return $this->belongsTo(Role::class);
     }
 
-    public function is_active(){
+    public function is_active() {}
 
-    }
-
-    public function isAdmin(){
+    public function isAdmin()
+    {
         return $this->role->slug === "administrator";
     }
 
-    public function isUser(){
-        return $this->role->slug ==="user";
+    public function isUser()
+    {
+        return $this->role->slug === "user";
     }
 
-    public function isEditor(){
-        return $this->role->slug ==="editor";
+    public function isEditor()
+    {
+        return $this->role->slug === "editor";
     }
 
-    public function isCustomer(){
-        return $this->role->slug ==="customer";
+    public function isCustomer()
+    {
+        return $this->role->slug === "customer";
     }
 
-    public function abilities(){
+    public function abilities()
+    {
         $this->role->id ?? null;
         return [
             'admin' => $this->isAdmin(),
@@ -82,7 +86,5 @@ class User extends Authenticatable
             'editor' => $this->isEditor(),
             'customer' => $this->isCustomer(),
         ];
-        
     }
 }
-
