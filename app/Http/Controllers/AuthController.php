@@ -65,6 +65,12 @@ class AuthController extends Controller
                 ], 401);
             }
 
+            if(!$user->is_active){
+                return response()->json([
+                    'Message'=>'Your account is not activated. Please verify your email.'
+                ], 403);
+            }
+            
             $token = $user->createToken("auth-token")->plainTextToken;
              return response()->json([
                 'message' => 'Login Successful!',

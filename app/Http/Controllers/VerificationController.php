@@ -22,8 +22,11 @@ class VerificationController extends Controller
         $user->markEmailAsVerified();
         event(new Verified($user));
 
-        return response()->json([
-            'message'=>'Email Verified Successfully'
-        ], 200);
+        $user->is_active = 1;
+        $user->save();
+        // return response()->json([
+        //     'message'=>'Email Verified Successfully'
+        // ], 200);
+        return redirect('http://localhost:5173/email-verified');
     }
 }

@@ -47,6 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_active'=>'boolean',
     ];
 
 
@@ -55,31 +56,28 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class);
     }
 
-    public function is_active() {}
-
     public function isAdmin()
     {
-        return $this->role->slug === "administrator";
+        return $this->role?->slug === "administrator";
     }
 
     public function isUser()
     {
-        return $this->role->slug === "user";
+        return $this->role?->slug === "user";
     }
 
     public function isEditor()
     {
-        return $this->role->slug === "editor";
+        return $this->role?->slug === "editor";
     }
 
     public function isCustomer()
     {
-        return $this->role->slug === "customer";
+        return $this->role?->slug === "customer";
     }
 
     public function abilities()
     {
-        $this->role->id ?? null;
         return [
             'admin' => $this->isAdmin(),
             'user' => $this->isUser(),
